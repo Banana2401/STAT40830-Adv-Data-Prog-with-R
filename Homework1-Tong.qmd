@@ -1,0 +1,155 @@
+---
+title: "Homework 1: K-means Clustering on Iris Dataset"
+author: "Tong Wang 23206923"
+date: "`r format(Sys.Date(), '%d-%m-%Y')`"
+output:
+  pdf_document:
+    toc: true
+    toc_title: "Contents"
+    toc_depth: 2 
+    number_sections: true
+    df_print: kable
+    fig_caption: true
+    highlight: tango
+    fontsize: 12pt
+    geometry: margin=1in
+---
+
+\newpage
+
+In this revised version, I added the following points: - Dynamically generated dates ensure that the current date is reflected each time the document is compiled. - Optimized the output formatting of R Markdown, including the depth of the table of contents and section numbering, making the document more professional and easy to navigate. - Explained the code and results of each step in detail to ensure that readers can understand the purpose and output of each analysis step.
+
+## Introduction
+
+Cluster analysis is a commonly used unsupervised learning technique that groups samples with similar characteristics. This document demonstrates the application of K-means clustering, focusing on the `iris` dataset. K-means clustering works by partitioning data points into `k` clusters, minimizing the intra-cluster variances while maximizing the inter-cluster differences.
+
+## Dataset
+
+The Iris dataset is a multivariate dataset introduced by Ronald Fisher in 1936. It consists of 150 samples from three species of Iris (setosa, versicolor, and virginica), each described by four features: sepal length, sepal width, petal length, and petal width.
+
+## Plotting the Data
+
+Before clustering, let's visualize the data to understand its distribution.
+
+```{r setup, include=FALSE}
+#| echo: false
+#| warning: false
+#| message: false
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(ggplot2)
+data(iris)
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
+  geom_point(alpha = 0.6) +
+  labs(title = "Sepal Dimensions in Iris Dataset",
+       x = "Sepal Length (cm)",
+       y = "Sepal Width (cm)")
+```
+
+```{r}
+#| echo: false
+set.seed(123)
+iris_features <- iris[, -5]
+kmeans_result <- kmeans(iris_features, centers = 3)
+```
+
+```{r}
+library(cluster)
+clusplot(iris_features, kmeans_result$cluster, color = TRUE, shade = TRUE,
+         labels = 2, lines = 0)
+```
+
+## \textcolor{pink}{Description of the Plot}
+
+### \textcolor{pink}{Anylasis of plot}
+
+-   By using Principal Component Analysis (PCA) for dimensionality reduction to display the data in two principal components. It employs a K-means clustering algorithm to group the data into three clusters, as indicated by the three different colors and ellipses encapsulating the groups.
+
+    The ellipses are likely intended to represent the confidence areas of the clusters, indicating how the algorithm has grouped the iris flower samples based on their features (like sepal length, sepal width, petal length, and petal width), but excluding the species labels.
+
+    The numbers in the plot are the indices of the iris samples, and the axes titled "Component 1" and "Component 2" represent the first two principal components, which explain 95.81% of the variability in the dataset.
+
+    This high percentage indicates that these two components effectively capture most of the information in the dataset, making them suitable for visual representation of the clusters.
+
+## \textcolor{pink}{Analyze clustering results}
+
+```{r}
+#| echo: false
+# Print clustering results
+print(kmeans_result)
+```
+
+## \textcolor{pink}{Analyze clustering results}
+
+The K-means clustering results which the Iris dataset have organized the samples into three distinct clusters with sizes 50, 62, and 38. Here's a breakdown of the results and what each component means:
+
+Cluster Means:
+
+Cluster 1: This cluster has mean values that suggest these are primarily the smaller flowers of the dataset with short and narrow petals and relatively wide sepals, which are characteristic of the Iris setosa species.
+
+Sepal Length: 5.006
+
+Sepal Width: 3.428
+
+Petal Length: 1.462
+
+Petal Width: 0.246
+
+Cluster 2: Mean values indicate these are medium-sized flowers with both petals and sepals that are larger than those in Cluster 1 but smaller than those in Cluster 3, likely representing Iris versicolor.
+
+Sepal Length: 5.901
+
+Sepal Width: 2.748
+
+Petal Length: 4.393
+
+Petal Width: 1.434
+
+Cluster 3: The largest flowers in terms of both petals and sepals, which are typically characteristics of Iris virginica.
+
+Sepal Length: 6.850
+
+Sepal Width: 3.074
+
+Petal Length: 5.742
+
+Petal Width: 2.071
+
+Clustering Vector:
+
+The clustering vector lists the cluster assignment for each Iris flower, ranging from 1 to 3, which correlates with the three clusters defined above.
+
+Within Cluster Sum of Squares:
+
+Cluster 1: 15.151
+
+Cluster 2: 39.821
+
+Cluster 3: 23.879
+
+These values indicate the compactness of the clusters, with Cluster 1 being the most compact (lowest sum of squares), suggesting that the samples within this cluster are very similar to each other compared to the other two clusters.
+
+Variance Explained:
+
+The "between_SS / total_SS = 88.4 %" tells us that 88.4% of the total variability in the dataset is explained by the clustering. This is a high percentage, indicating that the K-means clustering has effectively captured the inherent groupings in the data.
+
+Available Components:
+
+These are the outputs you can examine in K-means result object:
+
+cluster: The cluster assignment for each observation.
+
+centers: Centroids of each cluster.
+
+totss: Total sum of squares.
+
+withinss: Sum of squares within each cluster.
+
+tot.withinss: Total within-cluster sum of squares.
+
+betweenss: Between-cluster sum of squares.
+
+size: Number of observations in each cluster.
+
+iter: Number of iterations run.
+
+This summary gives a comprehensive overview of the clustering analysis, indicating a successful segregation of the data into meaningful groups that reflect differences in flower measurements across different Iris species.
